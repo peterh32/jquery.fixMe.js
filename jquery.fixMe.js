@@ -36,18 +36,18 @@
                 }
             };
             // Events
-            $(window).scroll(function(e){
+            $window.scroll(function(e){
                 doFixMe();
                 return true;
             });
-            $(window).resize(function(e){
+            $window.resize(function(e){
                 doFixMe();
                 return true;
             });
 
             // Iframe event
             if (!window.top != window) {
-                $(window).on("message", function (e) {
+                $window.on("message", function (e) {
                     if (e.originalEvent && !e.origin) {
                         e = e.originalEvent;  // jquery does not quite handle this correctly, so we make adjustments
                     }
