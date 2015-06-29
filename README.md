@@ -13,3 +13,16 @@ or
    
 ## Options
 yPad: Number of pixels from the top of the page at which fixed behavior should kick in. Default is zero.
+
+## Iframe Support
+Can support a page inside an iframe using a window message sent from the top window, something like this:
+
+   ```
+   iframe = document.getElementById('#my_iframe');
+   $(window).on("scroll", function() {
+       var y = Math.round($(window).scrollTop() - $(iframe).offset().top);
+       iframe.contentWindow.postMessage({'y': y}, '*');
+   });
+   ```
+
+The postMessage should consist of the object {'y': some number of pixels }, and of course the initialization `$('.my_element').fixMe();` needs to run in the iframe, not the top window.
