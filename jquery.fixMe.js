@@ -1,21 +1,8 @@
-/*
- *   fixMe - JQuery plugin to make element lock in place when it hits the top of the browser.
- *
- *   Approach:
- *      When you scroll the page to where the element hits the top of the browser, change
- *      the element to position:fixed. To maintain document flow, replace the element with
- *      another empty placeholder.
- *
- *   Usage:
- *      $('.my_element').fixMe(); or $('.my_element').fixMe({yPad: 60});
- *      
- *   Options:
- *      yPad: Number of pixels from the top of the page at which fixed behavior should kick in.
- */
 (function( $ ){
     $.fn.fixMe = function(options) {
-        if (typeof options == 'object') {
-            var yPad = options.yPad || 0;
+        var yPad = 0;
+        if (typeof options == 'object' && parseInt(options.yPad)) {
+            var yPad = parseInt(options.yPad);
         }
         var $self = $(this);
         if ($self.length && !$self.hasClass('fixMeApplied') && $self.is(':visible')){
@@ -34,13 +21,15 @@
                 'display': 'none'
             }).insertBefore($self);
             var left = $self.offset().left;
+
             // The main function
-            var doFixMe = function(){
-                var y =  $window.scrollTop();
+            var doFixMe = function(yIframe){
+                yIframe = (yIframe && parseInt(yIframe)) || 0;
+                var y =  $window.scrollTop() + yIframe;
                 if (y >= fixAt){
                     $placeholder.css('display', 'block');
                     left = $placeholder.offset().left - $window.scrollLeft();
-                    $self.css({'position':'fixed', 'top': t_0, 'left': left});
+                    $self.css({'position':'fixed', 'top': t_0 +  + yIframe, 'left': left});
                 } else {
                     $self.css({'position':'relative', 'left':l_0, 'top':t_0 - yPad});
                     $placeholder.css('display', 'none');
@@ -55,6 +44,19 @@
                 doFixMe();
                 return true;
             });
+
+            // Iframe event
+            if (!window.top != window) {
+                $(window).on("message", function (e) {
+                    if (e.originalEvent && !e.origin) {
+                        e = e.originalEvent;  // jquery does not quite handle this correctly, so we make adjustments
+                    }
+                    if (e.data && parseInt(e.data.y)) {
+                        doFixMe(parseInt(e.data.y));
+                    }
+                });
+            }
+
             doFixMe(); // in case you started out scrolled down the page
             $self.addClass('fixMeApplied');
         }
