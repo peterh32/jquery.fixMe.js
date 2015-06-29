@@ -27,8 +27,8 @@
             var $placeholder = $('<div class="fixMePlaceHolder">&nbsp;</div>').css({
                 'position': 'relative',
                 'float': $self.css('float'),
-                'width': $self.width() + 'px',
-                'height': $self.height() + 'px',
+                'width': $self.outerWidth() + 'px',
+                'height': $self.outerHeight() + 'px',
                 'left': l_0 + 'px',
                 'top': t_0 + 'px',
                 'display': 'none'
